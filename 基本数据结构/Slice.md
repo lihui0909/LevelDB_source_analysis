@@ -15,6 +15,8 @@ LevelDB中自定义的结构体Slice和C++标准库中的string虽然都表示�
 修改：58-70行，data_的类型为const char*，不会修改指向的字符串，只能修改指向字符串的起始位置。
 比较：从75行到最后。
 从源码可以看出，Slice没有任何内存管理，仅仅是C风格字符串及其长度的封装。
+
+```c++
 #ifndef STORAGE_LEVELDB_INCLUDE_SLICE_H_
 #define STORAGE_LEVELDB_INCLUDE_SLICE_H_
 

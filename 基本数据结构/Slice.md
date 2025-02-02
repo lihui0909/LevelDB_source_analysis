@@ -1,15 +1,14 @@
-1.Slice
-（1）字符串封装类型，Slice定义在include/leveldb/slice.h
-（2）源码中的简介：
+# 一、字符串封装类型，Slice定义在include/leveldb/slice.h
+# 二、源码中的简介：
  Slice is a simple structure containing a pointer into some external storage and a size.  The user of a Slice must ensure that the slice is not used after the corresponding external storage has been deallocated.
 Multiple threads can invoke const methods on a Slice without external synchronization, but if any of the threads may call a non-const method, all threads accessing the same Slice must use external synchronization.
 Slice可以理解为一个指针，指向了外部的存储和大小。在释放了对应的外部存储后，不应该再使用该Slice。
 多个线程可以在没有外部同步的情况下调用Slice的const方法，但是如果任何线程调用了非常量方法，则访问同一Slice的所有线程都必须使用外部同步。（为了保证一致性）
-（3）为什么字符串有了string还需要Slice？
+# 三、为什么字符串有了string还需要Slice？
 LevelDB中自定义的结构体Slice和C++标准库中的string虽然都表示字符串类型，但是他们在设计和使用上有很大的区别。
 内存管理：string表示一段动态分配字符数组，自动管理自己的内存，在构造时分配内存，销毁时释放内存。Slice只包含一个指向外部存储的指针和一个数据长度，它不管理内存，只是一个轻量级的视图，可以指向任何外部数据，在销毁时也不会释放该数据，没有动态内存管理的开销。
 设计和用途：string的目的是方便管理字符串数据，并自动处理内存分配和释放，适用于经常修改字符串内容的场景，这会有额外的开销，尤其是创建和销毁对象时。Slice是为了高效处理不需要修改的数据，直接对外部存储进行操作，不需要在内存中复制数据。当leveldb需要操作大量的数据时（从磁盘读）使用Slice可以显著提高性能。
-（4）源码：
+# 四、源码：
 定义一共分为四部分：构造、获取、修改和比较。
 构造：16-36行，默认构造函数为空字符串，提供了带长度和不带长度的字符串构造方法，并且支持默认的拷贝构造函数和拷贝赋值操作符。
 获取：38-56行，获取Slice的信息。还包括73行的导出为string方法。
